@@ -4,6 +4,7 @@ import at.pfarrhofer.message.Message;
 import at.pfarrhofer.message.MessageCreateDTO;
 import at.pfarrhofer.message.MessageDTO;
 import at.pfarrhofer.user.User;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -15,6 +16,8 @@ import java.util.List;
 
 @Path("/servers")
 public class ServerResource {
+    @Inject
+    ServerSocket serverSocket;
 
     @GET
     public Response getAllServers() {
@@ -35,6 +38,7 @@ public class ServerResource {
     public Response addMessage(@PathParam("id") long id, MessageCreateDTO dto) {
         Message message = new Message(dto.content(), User.findById(dto.userId()), Server.findById(id));
         Message.persist(message);
+        serverSocket.sendMessage(message);
         return Response.status(Response.Status.CREATED).entity(MessageDTO.toResource(message)).build();
     }
 }

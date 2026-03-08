@@ -4,6 +4,7 @@ import {ServerService} from '../server.service';
 import {Message} from '../message';
 import {FormsModule} from '@angular/forms';
 import {User} from '../user';
+import {ServerSocketService} from '../server-socket.service';
 
 @Component({
   selector: 'app-chat',
@@ -17,24 +18,28 @@ import {User} from '../user';
 export class ChatComponent implements OnInit {
   messages!: Message[];
   serverService: ServerService = inject(ServerService);
+  serverSocketService: ServerSocketService = inject(ServerSocketService);
 
   ngOnInit(): void {
     this.serverService.getAll().subscribe(messages => {
       this.messages = messages;
+    })
+
+    this.serverSocketService.connect().subscribe(message => {
+      console.log(message);
+      this.messages.push(message);
     })
   }
 
   messageInput: string = '';
 
   sendMessage() {
-    console.log(this.messageInput);
     this.serverService.sendMessage(
       {
         content: this.messageInput,
-        userId: 2
+        userId: 1
       }
     ).subscribe(message => {
-      console.log(message);
       this.messageInput = '';
     })
   }

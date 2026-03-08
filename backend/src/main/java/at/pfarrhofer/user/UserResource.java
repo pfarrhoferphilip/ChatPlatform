@@ -1,6 +1,7 @@
 package at.pfarrhofer.user;
 
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
@@ -20,5 +21,10 @@ public class UserResource {
     @Path("/{id}")
     public Response getUser(@PathParam("id") long id) {
         return Response.ok(UserDTO.toResource(User.findById(id))).build();
+    }
+
+    @POST
+    public Response createUser(UserDTO user) {
+        
     }
 }
