@@ -1,5 +1,6 @@
 ### GET ALL USERS
 GET http://localhost:8080/api/users
+Authorization: 1:admin
 
 ### GET USER BY ID
 GET http://localhost:8080/api/users/1
@@ -11,4 +12,22 @@ Content-Type: application/json
 {
   "content": "Sent Message",
   "userId": 1
+}
+
+### CREATE USER
+POST http://localhost:8080/api/users/create
+Content-Type: application/json
+
+{
+  "username": "Test",
+  "password": "admin"
+}
+
+### LOGIN
+PUT http://localhost:8080/api/users/login
+Content-Type: application/json
+
+{
+  "username": "Test",
+  "password": "admin"
 }

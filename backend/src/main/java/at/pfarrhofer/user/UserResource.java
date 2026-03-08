@@ -1,9 +1,8 @@
 package at.pfarrhofer.user;
 
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
+import at.pfarrhofer.security.PasswordUtil;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
@@ -23,8 +22,28 @@ public class UserResource {
         return Response.ok(UserDTO.toResource(User.findById(id))).build();
     }
 
+    @PUT
+    @Path("/login")
+    public Response login(UserCreateDTO dto) {
+        User user = User.find("username", dto.username()).singleResult();
+        if (user == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        if (!PasswordUtil.verifyPassword(dto.password(), user.password)) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+        return Response.ok(UserDTO.toResource(user)).build();
+    }
+
     @POST
-    public Response createUser(UserDTO user) {
-        
+    @Path("/create")
+    @Transactional
+    public Response createUser(UserCreateDTO dto) {
+        if (dto.username().isEmpty() || dto.password().isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        User user = new User(dto.username(), PasswordUtil.hashPassword(dto.password()));
+        User.persist(user);
+        return Response.status(Response.Status.CREATED).entity(UserDTO.toResource(user)).build();
     }
 }

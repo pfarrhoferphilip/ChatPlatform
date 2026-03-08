@@ -1,6 +1,6 @@
-INSERT INTO chat_user(id, username) VALUES
-                               (1, 'Ben Utzer'),
-                               (2, 'Ali');
+INSERT INTO chat_user(id, username, password) VALUES
+                               (1, 'Ben Utzer', '$2a$12$M5ZR2K31ZYdg1nZQHfbJnuiSCravfcg1hCZYhUrggk8V43SGL3I7y'),
+                               (2, 'admin', '$2a$12$M5ZR2K31ZYdg1nZQHfbJnuiSCravfcg1hCZYhUrggk8V43SGL3I7y');
 SELECT setval('chat_user_seq', 2);
 
 INSERT INTO server(id, name) VALUES

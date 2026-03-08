@@ -5,6 +5,8 @@ import {Message} from '../message';
 import {FormsModule} from '@angular/forms';
 import {User} from '../user';
 import {ServerSocketService} from '../server-socket.service';
+import {Router} from '@angular/router';
+import {routes} from '../app.routes';
 
 @Component({
   selector: 'app-chat',
@@ -19,8 +21,11 @@ export class ChatComponent implements OnInit {
   messages!: Message[];
   serverService: ServerService = inject(ServerService);
   serverSocketService: ServerSocketService = inject(ServerSocketService);
+  router: Router = inject(Router);
+  user:User = JSON.parse(<string>sessionStorage.getItem("user"));
 
   ngOnInit(): void {
+
     this.serverService.getAll().subscribe(messages => {
       this.messages = messages;
     })
@@ -37,7 +42,7 @@ export class ChatComponent implements OnInit {
     this.serverService.sendMessage(
       {
         content: this.messageInput,
-        userId: 1
+        userId: this.user.id
       }
     ).subscribe(message => {
       this.messageInput = '';
